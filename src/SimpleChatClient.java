@@ -12,6 +12,7 @@ public class SimpleChatClient {
     BufferedReader reader;
     PrintWriter writer;
     Socket sock;
+    JFrame frame;
 
     public static void main(String[] args) {
         new SimpleChatClient().go();
@@ -19,7 +20,7 @@ public class SimpleChatClient {
     }
 
     public void go(){
-        JFrame frame = new JFrame("Ludicrously Simple Chat Client");
+        frame = new JFrame("Ludicrously Simple Chat Client");
         JPanel mainPanel = new JPanel();
         incoming = new JTextArea(15,30);
         incoming.setLineWrap(true);
@@ -60,15 +61,20 @@ public class SimpleChatClient {
 
     public class SendButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                writer.println(outgoing.getText());
-                writer.flush();
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-
-            outgoing.setText("");
-            outgoing.requestFocus();
+            String message = outgoing.getText();
+                try {
+                    if (message.startsWith("%")){
+                        incoming.append("name applied" + "\n");
+                        frame .setTitle("Ludicrously Simple Chat Client  -  " + message.substring(1));
+                    }
+                    writer.println(message);
+                    writer.flush();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                outgoing.setText("");
+                outgoing.requestFocus();
+//            }
 
         }
     }
@@ -79,7 +85,7 @@ public class SimpleChatClient {
             try {
                 while ((message = reader.readLine()) != null){
                     System.out.println("read " + message);
-                    incoming.append(message + "\n");
+                        incoming.append(message + "\n");
                 }
             }catch (Exception ex) {
                 ex.printStackTrace();
